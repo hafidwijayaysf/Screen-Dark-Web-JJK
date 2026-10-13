@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Pop-up layar · The Cursed Player</title>
+<style>
+:root{--bg:#06070b;--rd:#ff3b30;--dk:#b31f1f;--tx:#f1efe8;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06070b}}
+:root[data-theme="dark"]{--bg:#06070b}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--bg);color:var(--tx);font-family:"Segoe UI",system-ui,-apple-system,Roboto,sans-serif;user-select:none}
+#desk{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 20%,#1d3a6e 0,#0d1a38 55%,#070d1e 100%)}
+#tb{position:absolute;left:0;right:0;bottom:0;height:44px;background:#0b1020ee;border-top:1px solid #1e2a4a;display:flex;align-items:center;gap:10px;padding:0 14px}
+#tb i{width:22px;height:22px;border-radius:5px;background:#2a3b66;display:block}#tb i:first-child{background:#3b82f6}
+#clk{margin-left:auto;font-size:13px;color:#aab4d0}
+#dark{position:absolute;inset:0;background:#030102;opacity:0;pointer-events:none;transition:opacity 1.1s}
+#dark::after{content:"";position:absolute;inset:0;background:repeating-linear-gradient(0deg,#0000 0 2px,#00000055 2px 3px),radial-gradient(ellipse at center,#0000 40%,#000 100%);mix-blend-mode:multiply}
+#ns{position:absolute;inset:0;width:100%;height:100%;image-rendering:pixelated;opacity:.14;pointer-events:none;display:none;mix-blend-mode:screen}
+#red{position:absolute;inset:0;background:radial-gradient(ellipse at center,#ff3b3033 0,#0000 65%);opacity:0;transition:opacity 1s;pointer-events:none}
+.fl{animation:fl 1.1s steps(1) 1}
+@keyframes fl{0%{opacity:.35}10%{opacity:.95}22%{opacity:.2}34%{opacity:.9}46%{opacity:.1}60%{opacity:.95}75%{opacity:.4}100%{opacity:.92}}
+#win{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(88vw,780px);background:#0a0305;border:2px solid var(--rd);box-shadow:0 0 40px #ff3b3055,inset 0 0 30px #ff3b3022;display:none}
+#win.on{display:block;animation:pop .28s ease-out}
+#win.sh{animation:sh .35s}
+@keyframes pop{0%{transform:translate(-50%,-50%) scale(.85);opacity:0}60%{transform:translate(-50%,-50%) scale(1.03)}100%{transform:translate(-50%,-50%) scale(1);opacity:1}}
+@keyframes sh{0%,100%{transform:translate(-50%,-50%)}20%{transform:translate(calc(-50% - 12px),-50%)}40%{transform:translate(calc(-50% + 12px),-50%)}60%{transform:translate(calc(-50% - 8px),-50%)}80%{transform:translate(calc(-50% + 8px),-50%)}}
+.bar{display:flex;justify-content:space-between;background:var(--dk);color:#fff;font-size:13px;letter-spacing:.08em;padding:6px 12px}
+.bd{padding:clamp(22px,5vw,56px) clamp(18px,4vw,48px);text-align:center}
+h1{position:relative;margin:0 0 clamp(22px,4vw,44px);font-size:clamp(24px,5vw,60px);font-weight:800;color:#ffd6d2;text-shadow:2px 0 #ff3b30,-2px 0 #3bd0ff;animation:gl 3s infinite}
+h1::before,h1::after{content:attr(data-t);position:absolute;left:0;right:0;opacity:.6}
+h1::before{color:#ff3b30;transform:translate(3px,0);clip-path:inset(0 0 60% 0);animation:g1 2.2s infinite steps(1)}
+h1::after{color:#3bd0ff;transform:translate(-3px,0);clip-path:inset(55% 0 0 0);animation:g1 1.7s infinite steps(1) reverse}
+@keyframes g1{0%{clip-path:inset(0 0 70% 0)}25%{clip-path:inset(40% 0 30% 0)}50%{clip-path:inset(70% 0 5% 0)}75%{clip-path:inset(10% 0 60% 0)}}
+@keyframes gl{0%,92%,100%{transform:none}94%{transform:translateX(-5px) skewX(6deg)}96%{transform:translateX(6px)}}
+.bt{display:flex;justify-content:center;gap:clamp(14px,3vw,36px)}
+button{font:700 clamp(16px,2.4vw,26px) inherit;font-family:inherit;min-width:clamp(110px,18vw,190px);padding:12px 20px;border:2px solid var(--rd);background:#2a0508;color:#fff;cursor:pointer;letter-spacing:.12em}
+button:hover{background:var(--rd);box-shadow:0 0 24px var(--rd)}
+#n{border-color:#666;background:#18181c;color:#bbb}#n:hover{background:#333;box-shadow:none}
+#hint{position:absolute;left:12px;bottom:54px;font-size:12px;color:#8a93ad;background:#0007;padding:5px 9px;border-radius:6px;transition:opacity .3s}
+#hint.hd{opacity:0;pointer-events:none}
+</style></head><body>
+<div id="desk"><div id="tb"><i></i><i></i><i></i><i></i><span id="clk"></span></div></div>
+<div id="dark"></div><div id="red"></div><canvas id="ns" width="160" height="90"></canvas>
+<div id="win"><div class="bar"><span>▮ unknown://dialog</span><span>×</span></div><div class="bd"><h1 id="q" data-t=""></h1><div class="bt"><button id="y">YES</button><button id="n">NO</button></div></div></div>
+<div id="hint">Spasi: munculkan pop-up · Y / N: jawab · R: reset · F: layar penuh · H: sembunyikan petunjuk</div>
+<script>
+(function(){
+const $=id=>document.getElementById(id);let ph='idle',ac=null,dr=null,nt=null;
+function clock(){const d=new Date();$('clk').textContent=d.toLocaleTimeString('id-ID',{hour:'2-digit',minute:'2-digit'}).replace('.',':')}clock();setInterval(clock,20000);
+function A(){try{if(!ac)ac=new (window.AudioContext||window.webkitAudioContext)();if(ac.state==='suspended')ac.resume()}catch(e){}return ac}
+function tone(f,d,ty,g,sl){const a=A();if(!a)return;const o=a.createOscillator(),v=a.createGain(),t=a.currentTime;o.type=ty;o.frequency.setValueAtTime(f,t);if(sl)o.frequency.exponentialRampToValueAtTime(sl,t+d);v.gain.setValueAtTime(g,t);v.gain.exponentialRampToValueAtTime(.0001,t+d);o.connect(v);v.connect(a.destination);o.start();o.stop(t+d)}
+function drone(on){const a=A();if(!a)return;if(on&&!dr){const o=a.createOscillator(),o2=a.createOscillator(),v=a.createGain();o.type='sine';o.frequency.value=48;o2.type='sawtooth';o2.frequency.value=51;v.gain.setValueAtTime(.0001,a.currentTime);v.gain.exponentialRampToValueAtTime(.09,a.currentTime+2);o.connect(v);o2.connect(v);v.connect(a.destination);o.start();o2.start();dr={o,o2,v}}else if(!on&&dr){const t=a.currentTime;dr.v.gain.cancelScheduledValues(t);dr.v.gain.setValueAtTime(dr.v.gain.value,t);dr.v.gain.exponentialRampToValueAtTime(.0001,t+.8);const d=dr;dr=null;setTimeout(()=>{try{d.o.stop();d.o2.stop()}catch(e){}},900)}}
+function noise(on){const c=$('ns'),x=c.getContext('2d');c.style.display=on?'block':'none';clearInterval(nt);if(!on)return;nt=setInterval(()=>{const im=x.createImageData(160,90);for(let i=0;i<im.data.length;i+=4){const v=Math.random()*255;im.data[i]=v;im.data[i+1]=v*.5;im.data[i+2]=v*.5;im.data[i+3]=255}x.putImageData(im,0,0)},90)}
+function show(t){const q=$('q');q.textContent=t;q.setAttribute('data-t',t);const w=$('win');w.classList.remove('on','sh');void w.offsetWidth;w.classList.add('on')}
+function hide(){$('win').classList.remove('on','sh')}
+function flick(){const d=$('dark');d.classList.remove('fl');void d.offsetWidth;d.classList.add('fl')}
+function start(){if(ph!=='idle'&&ph!=='end')return;A();ph='p1';$('dark').style.opacity='.3';tone(880,.28,'square',.07,440);tone(110,.7,'sawtooth',.06);show('Do you want to be good?')}
+function yes(){if(ph==='p1'){ph='busy';tone(300,.1,'square',.1,120);hide();flick();$('dark').style.opacity='.94';$('red').style.opacity='1';noise(true);drone(true);setTimeout(()=>{ph='p2';tone(660,.25,'square',.06,330);show('Are you sure?')},1500)}
+ else if(ph==='p2'){ph='busy';tone(300,.1,'square',.1,120);hide();drone(false);setTimeout(()=>{$('dark').style.opacity='0';$('red').style.opacity='0';noise(false);ph='end'},900)}}
+function no(){if(ph==='p1'||ph==='p2'){tone(140,.2,'sawtooth',.08,70);const w=$('win');w.classList.remove('on','sh');void w.offsetWidth;w.classList.add('on','sh')}}
+function reset(){ph='idle';hide();drone(false);noise(false);$('dark').style.opacity='0';$('red').style.opacity='0'}
+$('y').onclick=yes;$('n').onclick=no;
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k===' '){e.preventDefault();start()}else if(k==='y'||k==='enter')yes();else if(k==='n')no();else if(k==='r'||k==='escape')reset();else if(k==='h')$('hint').classList.toggle('hd');else if(k==='f'){try{if(document.fullscreenElement)document.exitFullscreen();else document.documentElement.requestFullscreen()}catch(err){}}});
+})();
+</script></body></html>
